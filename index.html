@@ -163,22 +163,34 @@
       text-transform: uppercase;
     }
     .cta {
-      margin-top: 6px;
+      position: fixed;
+      left: 50%;
+      bottom: max(24px, env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      z-index: 35;
+      min-width: 190px;
       border: 1px solid var(--ink);
-      background: transparent;
-      color: var(--ink);
-      padding: 14px 22px;
+      background: var(--ink);
+      color: var(--paper);
+      padding: 15px 24px;
       font: inherit;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: .15em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: background .18s ease, color .18s ease;
+      box-shadow: 0 12px 34px rgba(0,0,0,.18);
+      transition: transform .18s ease, background .18s ease, color .18s ease, opacity .18s ease;
     }
     .cta:hover, .cta:focus-visible {
-      background: var(--ink);
-      color: var(--paper);
+      transform: translateX(-50%) translateY(-3px);
+      background: var(--paper);
+      color: var(--ink);
+    }
+    body.form-open .cta {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(12px);
     }
     .corner-logo {
       position: fixed;
@@ -368,6 +380,11 @@
         flex-direction: column;
       }
       #status { text-align: left; }
+      .cta {
+        bottom: max(16px, env(safe-area-inset-bottom));
+        width: calc(100% - 36px);
+        max-width: 360px;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -393,7 +410,7 @@
         <span>150 printed</span>
       </div>
 
-      <button class="cta" id="openForm">I’d like one</button>
+      <button class="cta" id="openForm" type="button">I’d like one →</button>
     </main>
   </div>
 
@@ -507,6 +524,7 @@
       backdrop.classList.add('open');
       sheet.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('form-open');
       setTimeout(() => document.getElementById('firstName').focus(), 250);
     }
 
@@ -515,6 +533,7 @@
       backdrop.classList.remove('open');
       sheet.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
+      document.body.classList.remove('form-open');
     }
 
     openButton.addEventListener('click', openSheet);
